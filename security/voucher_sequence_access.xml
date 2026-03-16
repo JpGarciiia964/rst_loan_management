@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Accesos para rst.loan.voucher.sequence en XML (no CSV)
+         porque es un modelo nuevo — el CSV se procesa antes de que
+         Odoo registre el modelo en ir.model durante el upgrade. -->
+    <data noupdate="0">
+
+        <record id="access_rst_voucher_seq_manager" model="ir.model.access">
+            <field name="name">rst.loan.voucher.sequence manager</field>
+            <field name="model_id" ref="model_rst_loan_voucher_sequence"/>
+            <field name="group_id" ref="rst_loan_management.group_rst_loan_manager"/>
+            <field name="perm_read"   eval="True"/>
+            <field name="perm_write"  eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="access_rst_voucher_seq_officer" model="ir.model.access">
+            <field name="name">rst.loan.voucher.sequence officer</field>
+            <field name="model_id" ref="model_rst_loan_voucher_sequence"/>
+            <field name="group_id" ref="rst_loan_management.group_rst_loan_officer"/>
+            <field name="perm_read"   eval="True"/>
+            <field name="perm_write"  eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="access_rst_voucher_seq_viewer" model="ir.model.access">
+            <field name="name">rst.loan.voucher.sequence viewer</field>
+            <field name="model_id" ref="model_rst_loan_voucher_sequence"/>
+            <field name="group_id" ref="rst_loan_management.group_rst_loan_viewer"/>
+            <field name="perm_read"   eval="True"/>
+            <field name="perm_write"  eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_rst_loan_payment_list" model="ir.ui.view">
+        <field name="name">rst.loan.payment.list</field>
+        <field name="model">rst.loan.payment</field>
+        <field name="arch" type="xml">
+            <tree string="Pagos de Préstamos"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="voucher_number" string="Comprobante"/>
+                <field name="contract_id"/>
+                <field name="partner_id"/>
+                <field name="date_payment"/>
+                <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="payment_method"/>
+                <field name="reference"/>
+                <field name="loan_officer_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"
+                       decoration-muted="state == 'cancelled'"
+                       decoration-warning="state == 'draft'"/>
+                <field name="currency_id" invisible="1"/>
+                <button name="action_print_receipt" string="Boleta" type="object"
+                        icon="fa-print"
+                        attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                <button name="action_confirm" string="Confirmar" type="object"
+                        class="btn-success"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                <button name="action_cancel" string="Cancelar" type="object"
+                        class="btn-danger"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"
+                        groups="rst_loan_management.group_rst_loan_manager"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_rst_loan_payment_form" model="ir.ui.view">
+        <field name="name">rst.loan.payment.form</field>
+        <field name="model">rst.loan.payment</field>
+        <field name="arch" type="xml">
+            <form string="Pago de Préstamo">
+                <header>
+                    <button name="action_confirm" string="Confirmar Pago e Imprimir Boleta"
+                            type="object" class="btn-success"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="action_print_receipt" string="Reimprimir Boleta"
+                            type="object" class="btn-primary"
+                            icon="fa-print"
+                            attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                    <button name="action_cancel" string="Cancelar"
+                            type="object" class="btn-danger"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"
+                            confirm="¿Cancelar este pago?"
+                            groups="rst_loan_management.group_rst_loan_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <field name="voucher_number" readonly="1"
+                               attrs="{'invisible': [('voucher_number', '=', False)]}"
+                               string="N° Comprobante"/>
+                    </div>
+                    <group>
+                        <group string="Datos del Pago">
+                            <field name="contract_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="partner_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="schedule_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group string="Detalles">
+                            <field name="date_payment"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="amount"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="payment_method"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="reference"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                    <group string="Saldos y Desglose"
+                           attrs="{'invisible': [('state', '!=', 'confirmed')]}">
+                        <group>
+                            <field name="balance_before" readonly="1"/>
+                            <field name="balance_after" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="amount_capital" readonly="1"/>
+                            <field name="amount_interest" readonly="1"/>
+                            <field name="amount_late_fee" readonly="1"
+                                   attrs="{'invisible': [('amount_late_fee', '=', 0)]}"/>
+                            <field name="amount_penalty" readonly="1" string="Penalidad Cancelacion"
+                                   attrs="{'invisible': [('amount_penalty', '=', 0)]}"/>
+                            <field name="is_full_payoff" readonly="1"
+                                   attrs="{'invisible': [('is_full_payoff', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group string="Notas">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_rst_loan_payment_search" model="ir.ui.view">
+        <field name="name">rst.loan.payment.search</field>
+        <field name="model">rst.loan.payment</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Pagos">
+                <field name="name"/>
+                <field name="voucher_number"/>
+                <field name="contract_id"/>
+                <field name="partner_id"/>
+                <field name="reference"/>
+                <filter string="Confirmados" name="confirmed"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Borradores" name="draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Cancelados" name="cancelled"
+                        domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Hoy" name="today"
+                        domain="[('date_payment', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Contrato" name="group_contract"
+                            context="{'group_by': 'contract_id'}"/>
+                    <filter string="Cliente" name="group_partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Método de Pago" name="group_method"
+                            context="{'group_by': 'payment_method'}"/>
+                    <filter string="Mes" name="group_month"
+                            context="{'group_by': 'date_payment:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rst_loan_payment" model="ir.actions.act_window">
+        <field name="name">Pagos de Préstamos</field>
+        <field name="res_model">rst.loan.payment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_rst_loan_payment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sin pagos registrados</p>
+            <p>Registre los pagos desde el formulario o Kanban del contrato.</p>
+        </field>
+    </record>
+
+</odoo>

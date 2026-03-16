@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate="1": el usuario puede modificar estas secuencias.
+         No se deben resetear en cada upgrade. -->
+    <data noupdate="1">
+
+        <!-- Recibo interno predeterminado -->
+        <record id="voucher_seq_recibo" model="rst.loan.voucher.sequence">
+            <field name="name">Recibo de Pago</field>
+            <field name="code">RECIBO</field>
+            <field name="prefix">REC-</field>
+            <field name="suffix"></field>
+            <field name="padding">6</field>
+            <field name="next_number">1</field>
+            <field name="use_year" eval="True"/>
+            <field name="is_fiscal" eval="False"/>
+            <field name="is_default" eval="True"/>
+            <field name="description">Recibo interno de pago. Formato: REC-2025-000001</field>
+        </record>
+
+        <!-- Comprobante fiscal NCF B01 (República Dominicana) -->
+        <record id="voucher_seq_ncf_b01" model="rst.loan.voucher.sequence">
+            <field name="name">NCF Crédito Fiscal B01</field>
+            <field name="code">NCF_B01</field>
+            <field name="prefix">B01</field>
+            <field name="suffix"></field>
+            <field name="padding">8</field>
+            <field name="next_number">1</field>
+            <field name="use_year" eval="False"/>
+            <field name="is_fiscal" eval="True"/>
+            <field name="is_default" eval="False"/>
+            <field name="description">Comprobante fiscal NCF tipo B01 (Crédito Fiscal). Formato: B0100000001. Configure el número inicial según su rango autorizado por la DGII.</field>
+        </record>
+
+        <!-- Comprobante fiscal NCF B02 (Consumidor Final) -->
+        <record id="voucher_seq_ncf_b02" model="rst.loan.voucher.sequence">
+            <field name="name">NCF Consumidor Final B02</field>
+            <field name="code">NCF_B02</field>
+            <field name="prefix">B02</field>
+            <field name="suffix"></field>
+            <field name="padding">8</field>
+            <field name="next_number">1</field>
+            <field name="use_year" eval="False"/>
+            <field name="is_fiscal" eval="True"/>
+            <field name="is_default" eval="False"/>
+            <field name="description">Comprobante fiscal NCF tipo B02 (Consumidor Final). Formato: B0200000001. Configure el número inicial según su rango autorizado por la DGII.</field>
+        </record>
+
+    </data>
+</odoo>

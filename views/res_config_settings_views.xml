@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_rst_loan" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.rst.loan</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Prestamos RST" string="Prestamos RST"
+                     data-key="rst_loan_management"
+                     groups="rst_loan_management.group_rst_loan_manager">
+                    <h2>Apariencia de Documentos Impresos</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="rst_primary_color"/>
+                                <div class="text-muted">
+                                    Color principal para encabezados, barras y titulos de los documentos.
+                                </div>
+                                <div class="content-group mt-2">
+                                    <field name="rst_primary_color" widget="color"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="rst_secondary_color"/>
+                                <div class="text-muted">
+                                    Color para acentos, degradados y elementos secundarios.
+                                </div>
+                                <div class="content-group mt-2">
+                                    <field name="rst_secondary_color" widget="color"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="rst_accent_color"/>
+                                <div class="text-muted">
+                                    Color para cuotas, montos positivos y elementos de exito.
+                                </div>
+                                <div class="content-group mt-2">
+                                    <field name="rst_accent_color" widget="color"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="rst_danger_color"/>
+                                <div class="text-muted">
+                                    Color para totales a pagar, alertas y montos vencidos.
+                                </div>
+                                <div class="content-group mt-2">
+                                    <field name="rst_danger_color" widget="color"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle me-2"/>
+                                <strong>Nota:</strong> El logo y datos de la empresa se toman de
+                                <strong>Ajustes &gt; Usuarios y Empresas &gt; Empresas</strong>.
+                                Configure alli el logo, telefono, email, sitio web y direccion
+                                para que aparezcan en los documentos impresos.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extensión del formulario de contacto -->
+    <record id="view_rst_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.rst.loans</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Smart button de préstamos -->
+            <div name="button_box" position="inside">
+                <button name="action_view_loans" type="object"
+                        class="oe_stat_button" icon="fa-handshake-o"
+                        attrs="{'invisible': [('loan_count', '=', 0)]}">
+                    <field name="loan_count" widget="statinfo" string="Préstamos"/>
+                </button>
+            </div>
+
+            <!-- Clasificación de crédito en la pestaña de ventas/info -->
+            <field name="lang" position="after">
+                <field name="loan_classification" widget="badge"
+                       decoration-success="loan_classification == 'preferred'"
+                       decoration-warning="loan_classification == 'normal'"
+                       decoration-danger="loan_classification == 'delinquent'"
+                       attrs="{'invisible': [('loan_classification', '=', False)]}"/>
+                <field name="total_active_loans" string="Préstamos Activos" readonly="1"
+                       attrs="{'invisible': [('total_active_loans', '=', 0)]}"/>
+                <field name="total_loan_balance" string="Saldo en Préstamos" readonly="1"
+                       attrs="{'invisible': [('total_loan_balance', '=', 0.0)]}"/>
+            </field>
+
+        </field>
+    </record>
+
+    <!-- Vista lista de clientes con clasificación -->
+    <record id="view_rst_partner_list_inherit" model="ir.ui.view">
+        <field name="name">res.partner.list.rst.loans</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="phone" position="after">
+                <field name="loan_classification" optional="show"
+                       widget="badge"
+                       decoration-success="loan_classification == 'preferred'"
+                       decoration-warning="loan_classification == 'normal'"
+                       decoration-danger="loan_classification == 'delinquent'"/>
+                <field name="total_active_loans" optional="show" string="Préstamos Activos"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Acción: Lista de clientes morosos -->
+    <record id="action_rst_delinquent_clients" model="ir.actions.act_window">
+        <field name="name">Clientes Morosos</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('loan_classification', '=', 'delinquent')]</field>
+        <field name="context">{'default_loan_classification': 'delinquent'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">¡Sin clientes morosos!</p>
+            <p>No hay clientes con clasificación de morosidad en este momento.</p>
+        </field>
+    </record>
+
+    <!-- Acción: Lista de clientes preferenciales -->
+    <record id="action_rst_preferred_clients" model="ir.actions.act_window">
+        <field name="name">Clientes Preferenciales</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('loan_classification', '=', 'preferred')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sin clientes preferenciales aún</p>
+        </field>
+    </record>
+
+</odoo>

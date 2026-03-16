@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate="0": los crons se re-sincronizan en cada actualizacion del modulo.
+         Esto evita que queden crons con codigo o modelo desactualizados en la BD. -->
+    <data noupdate="0">
+
+        <!-- Aplica mora luego de dias de gracia -->
+        <record id="cron_apply_late_fees" model="ir.cron">
+            <field name="name">RST: Aplicar Moras por Dias de Gracia</field>
+            <field name="model_id" ref="model_rst_loan_contract"/>
+            <field name="state">code</field>
+            <field name="code">model.action_apply_late_fees_cron()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Marca cuotas vencidas respetando dias de gracia -->
+        <record id="cron_update_overdue" model="ir.cron">
+            <field name="name">RST: Actualizar Cuotas Vencidas</field>
+            <field name="model_id" ref="model_rst_loan_schedule"/>
+            <field name="state">code</field>
+            <field name="code">model.action_update_overdue()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Marca contratos como vencidos -->
+        <record id="cron_update_overdue_contracts" model="ir.cron">
+            <field name="name">RST: Actualizar Contratos Vencidos</field>
+            <field name="model_id" ref="model_rst_loan_contract"/>
+            <field name="state">code</field>
+            <field name="code">model.action_update_overdue_contracts()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Clasificacion de clientes -->
+        <record id="cron_client_classification" model="ir.cron">
+            <field name="name">RST: Clasificacion de Clientes</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model.action_update_loan_classification()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Recordatorios de pago -->
+        <record id="cron_payment_reminders" model="ir.cron">
+            <field name="name">RST: Recordatorios de Pago</field>
+            <field name="model_id" ref="model_rst_loan_schedule"/>
+            <field name="state">code</field>
+            <field name="code">model.action_send_payment_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

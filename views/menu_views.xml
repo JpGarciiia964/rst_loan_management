@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MENÚ PRINCIPAL
+    ═══════════════════════════════════════════════════════ -->
+    <menuitem id="menu_rst_loans_root"
+              name="RST Préstamos"
+              web_icon="rst_loan_management,static/description/icon.png"
+              sequence="50"
+              groups="rst_loan_management.group_rst_loan_viewer"/>
+
+    <!-- ── Préstamos ── -->
+    <menuitem id="menu_rst_loans_main"
+              name="Préstamos"
+              parent="menu_rst_loans_root"
+              sequence="10"/>
+
+    <menuitem id="menu_rst_loan_contracts"
+              name="Contratos"
+              parent="menu_rst_loans_main"
+              action="action_rst_loan_contract"
+              sequence="10"/>
+
+    <menuitem id="menu_rst_loan_payments"
+              name="Pagos"
+              parent="menu_rst_loans_main"
+              action="action_rst_loan_payment"
+              sequence="20"/>
+
+    <menuitem id="menu_rst_loan_schedule"
+              name="Cronograma de Cuotas"
+              parent="menu_rst_loans_main"
+              action="action_rst_loan_schedule"
+              sequence="30"/>
+
+    <!-- ── Clientes ── -->
+    <menuitem id="menu_rst_loans_clients"
+              name="Clientes"
+              parent="menu_rst_loans_root"
+              sequence="20"/>
+
+    <menuitem id="menu_rst_delinquent_clients"
+              name="Clientes Morosos"
+              parent="menu_rst_loans_clients"
+              action="action_rst_delinquent_clients"
+              sequence="10"/>
+
+    <menuitem id="menu_rst_preferred_clients"
+              name="Clientes Preferenciales"
+              parent="menu_rst_loans_clients"
+              action="action_rst_preferred_clients"
+              sequence="20"/>
+
+    <!-- ── Análisis ── -->
+    <menuitem id="menu_rst_loans_analysis"
+              name="Análisis"
+              parent="menu_rst_loans_root"
+              sequence="30"/>
+
+    <menuitem id="menu_rst_loan_dashboard"
+              name="Dashboard"
+              parent="menu_rst_loans_analysis"
+              action="action_rst_loan_dashboard"
+              sequence="10"/>
+
+    <menuitem id="menu_rst_loan_payment_analysis"
+              name="Análisis de Pagos"
+              parent="menu_rst_loans_analysis"
+              action="action_rst_loan_payment_analysis"
+              sequence="20"/>
+
+    <!-- ── Configuración ── -->
+    <menuitem id="menu_rst_loans_config"
+              name="Configuración"
+              parent="menu_rst_loans_root"
+              sequence="99"
+              groups="rst_loan_management.group_rst_loan_manager"/>
+
+    <menuitem id="menu_rst_loan_types"
+              name="Tipos de Préstamo"
+              parent="menu_rst_loans_config"
+              action="action_rst_loan_type"
+              sequence="10"
+              groups="rst_loan_management.group_rst_loan_manager"/>
+
+    <menuitem id="menu_rst_voucher_sequences"
+              name="Secuencias de Comprobantes"
+              parent="menu_rst_loans_config"
+              action="rst_loan_management.action_rst_voucher_sequence"
+              sequence="20"
+              groups="rst_loan_management.group_rst_loan_manager"/>
+
+</odoo>

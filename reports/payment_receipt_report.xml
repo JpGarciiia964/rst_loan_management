@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_rst_payment_receipt" model="ir.actions.report">
+        <field name="name">Boleta de Pago</field>
+        <field name="model">rst.loan.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rst_loan_management.report_rst_payment_receipt_template</field>
+        <field name="report_file">rst_loan_management.report_rst_payment_receipt_template</field>
+        <field name="binding_model_id" ref="model_rst_loan_payment"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_rst_payment_receipt_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="rec">
+                <t t-set="co" t-value="rec.company_id"/>
+                <t t-set="p" t-value="brand.get('primary', '#1a3a5c')"/>
+                <t t-set="s" t-value="brand.get('secondary', '#2980b9')"/>
+                <t t-set="a" t-value="brand.get('accent', '#27ae60')"/>
+                <t t-set="d" t-value="brand.get('danger', '#c0392b')"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <div t-attf-style="border-bottom:3px solid #{p}; padding-bottom:12px; margin-bottom:14px;">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="width:16%; vertical-align:middle; text-align:center;">
+                                        <img t-if="co.logo" t-att-src="image_data_uri(co.logo)" style="max-height:70px; max-width:130px; opacity:1 !important;" alt="Logo"/>
+                                    </td>
+                                    <td style="width:54%; vertical-align:middle; padding-left:12px;">
+                                        <div t-attf-style="font-size:18px; font-weight:800; color:#{p};"><t t-esc="co.name"/></div>
+                                        <t t-if="co.vat"><div style="font-size:11px; color:#555; margin-top:1px; font-weight:600;">RNC: <t t-esc="co.vat"/></div></t>
+                                        <t t-if="co.street"><div style="font-size:9.5px; color:#777; margin-top:1px;"><t t-esc="co.street"/><t t-if="co.city">, <t t-esc="co.city"/></t></div></t>
+                                        <div style="font-size:9.5px; color:#777; margin-top:1px;"><t t-if="co.phone">Tel: <t t-esc="co.phone"/></t><t t-if="co.email"> | <t t-esc="co.email"/></t></div>
+                                    </td>
+                                    <td style="width:30%; text-align:right; vertical-align:middle;">
+                                        <div t-attf-style="background:#{p}; color:#fff; padding:12px 16px; border-radius:6px; text-align:center;">
+                                            <div style="font-size:9px; opacity:.85; text-transform:uppercase; letter-spacing:1px;">No. Comprobante</div>
+                                            <div style="font-size:18px; font-weight:bold; margin-top:2px;"><t t-esc="rec.voucher_number or rec.name or '/'"/></div>
+                                            <div style="font-size:9px; opacity:.7; margin-top:2px;">Fecha: <t t-esc="rec.date_payment"/></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div t-attf-style="background:#{p}; color:#fff; padding:10px 18px; border-radius:8px; margin-bottom:14px; text-align:center;">
+                            <div style="font-size:18px; font-weight:800; letter-spacing:1.5px;">BOLETA DE PAGO</div>
+                            <div style="font-size:11px; opacity:.8; margin-top:2px;">Recibo de Cobro - Prestamos</div>
+                        </div>
+
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+                            <tr>
+                                <td style="width:50%; vertical-align:top; padding-right:8px;">
+                                    <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden;">
+                                        <div t-attf-style="background:#{p}; color:#fff; padding:6px 12px; font-size:10px; font-weight:700; letter-spacing:1px;">DATOS DEL CLIENTE</div>
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px; width:38%;">Nombre</td><td style="padding:4px 12px; font-weight:bold; font-size:11px;"><t t-esc="rec.partner_id.name"/></td></tr>
+                                            <tr style="background:#f8f9fa;"><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Cedula / RNC</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.partner_id.vat or '-'"/></td></tr>
+                                            <tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Telefono</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.partner_id.phone or rec.partner_id.mobile or '-'"/></td></tr>
+                                        </table>
+                                    </div>
+                                </td>
+                                <td style="width:50%; vertical-align:top; padding-left:8px;">
+                                    <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden;">
+                                        <div t-attf-style="background:#{p}; color:#fff; padding:6px 12px; font-size:10px; font-weight:700; letter-spacing:1px;">DATOS DEL CONTRATO</div>
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px; width:40%;">No. Contrato</td><td style="padding:4px 12px; font-weight:bold; font-size:11px;"><t t-esc="rec.contract_id.name"/></td></tr>
+                                            <tr style="background:#f8f9fa;"><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Tipo Prestamo</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.contract_id.loan_type_id.name if rec.contract_id.loan_type_id else '-'"/></td></tr>
+                                            <tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Oficial</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.loan_officer_id.name if rec.loan_officer_id else '-'"/></td></tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <t t-if="rec.schedule_id">
+                            <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden; margin-bottom:14px;">
+                                <div t-attf-style="background:#{p}; color:#fff; padding:6px 12px; font-size:10px; font-weight:700; letter-spacing:1px;">CUOTA APLICADA</div>
+                                <table style="width:100%; border-collapse:collapse; text-align:center; font-size:11px;">
+                                    <tr style="background:#f8f9fa;"><th style="padding:5px; color:#555; font-size:10px;">No. Cuota</th><th style="padding:5px; color:#555; font-size:10px;">Fecha Vencimiento</th><th style="padding:5px; color:#555; font-size:10px;">Monto Cuota</th><th style="padding:5px; color:#555; font-size:10px;">Capital / Interes</th></tr>
+                                    <tr><td style="padding:6px; font-weight:bold;">Cuota <t t-esc="rec.schedule_id.sequence"/></td><td style="padding:6px;"><t t-esc="rec.schedule_id.date_due"/></td><td style="padding:6px;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.schedule_id.amount_due"/></td><td style="padding:6px;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.schedule_id.amount_principal"/> / <t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.schedule_id.amount_interest"/></td></tr>
+                                </table>
+                            </div>
+                        </t>
+
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:14px;">
+                            <tr>
+                                <td style="width:55%; vertical-align:top; padding-right:10px;">
+                                    <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden;">
+                                        <div t-attf-style="background:#{p}; color:#fff; padding:6px 12px; font-size:10px; font-weight:700; letter-spacing:1px;">DETALLE DEL PAGO</div>
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px; width:42%;">Fecha de Pago</td><td style="padding:4px 12px; font-size:11px; font-weight:bold;"><t t-esc="rec.date_payment"/></td></tr>
+                                            <tr style="background:#f8f9fa;"><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Metodo</td><td style="padding:4px 12px; font-size:11px;"><t t-if="rec.payment_method == 'cash'">Efectivo</t><t t-elif="rec.payment_method == 'transfer'">Transferencia</t><t t-elif="rec.payment_method == 'check'">Cheque</t><t t-else="">Otro</t></td></tr>
+                                            <tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Referencia</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.reference or '-'"/></td></tr>
+                                            <tr style="background:#eaf2f8;"><td colspan="2" t-attf-style="padding:4px 12px; font-weight:bold; color:#{p}; font-size:9px; letter-spacing:0.5px;">DESGLOSE</td></tr>
+                                            <tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Capital</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.amount_capital"/></td></tr>
+                                            <tr style="background:#f8f9fa;"><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Interes</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.amount_interest"/></td></tr>
+                                            <t t-if="rec.amount_late_fee > 0"><tr style="background:#fef9e7;"><td style="padding:4px 12px; color:#b7950b; font-size:10px; font-weight:bold;">Mora</td><td style="padding:4px 12px; font-size:11px; color:#b7950b; font-weight:bold;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.amount_late_fee"/></td></tr></t>
+                                            <t t-if="rec.amount_penalty > 0"><tr style="background:#fdedec;"><td style="padding:4px 12px; color:#c0392b; font-size:10px; font-weight:bold;">Penalidad Cancelacion</td><td style="padding:4px 12px; font-size:11px; color:#c0392b; font-weight:bold;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.amount_penalty"/></td></tr></t>
+                                            <t t-if="rec.notes"><tr><td style="padding:4px 12px; color:#7f8c8d; font-size:10px;">Notas</td><td style="padding:4px 12px; font-size:11px;"><t t-esc="rec.notes"/></td></tr></t>
+                                        </table>
+                                    </div>
+                                </td>
+                                <td style="width:45%; vertical-align:top; padding-left:10px;">
+                                    <div t-attf-style="background:#{p}; color:#fff; border-radius:8px; padding:16px; text-align:center; margin-bottom:10px;">
+                                        <div style="font-size:10px; opacity:.85; text-transform:uppercase; letter-spacing:1px;">Monto Pagado</div>
+                                        <div style="font-size:28px; font-weight:bold; margin-top:4px;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.amount"/></div>
+                                    </div>
+                                    <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden;">
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <tr><td style="padding:6px 12px; color:#7f8c8d; font-size:10px;">Saldo Anterior</td><td style="padding:6px 12px; font-size:11px; text-align:right;"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.balance_before"/></td></tr>
+                                            <tr style="background:#eafaf1;"><td t-attf-style="padding:6px 12px; color:#{a}; font-size:10px; font-weight:bold;">Saldo Actual</td><td t-attf-style="padding:6px 12px; font-size:13px; font-weight:bold; text-align:right; color:#{a};"><t t-esc="rec.currency_id.symbol"/> <t t-esc="'%.2f' % rec.balance_after"/></td></tr>
+                                        </table>
+                                    </div>
+                                    <div style="background:#f0f2f5; border-radius:6px; padding:8px; text-align:center; margin-top:10px;">
+                                        <span style="font-size:10px; color:#7f8c8d; text-transform:uppercase;">Cuotas Restantes</span><br/>
+                                        <span t-attf-style="font-size:16px; font-weight:bold; color:#{p};"><t t-esc="rec.contract_id.schedule_count - rec.contract_id.paid_installments"/> de <t t-esc="rec.contract_id.schedule_count"/></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width:100%; margin-top:20px;">
+                            <tr>
+                                <td style="width:45%; text-align:center;"><div t-attf-style="border-top:2px solid #{p}; margin-top:36px; padding-top:6px;"><div style="font-size:11px; font-weight:700;"><t t-esc="rec.loan_officer_id.name if rec.loan_officer_id else ''"/></div><div style="font-size:9px; color:#7f8c8d;">Cobrador / Oficial</div></div></td>
+                                <td style="width:10%;"/>
+                                <td style="width:45%; text-align:center;"><div t-attf-style="border-top:2px solid #{p}; margin-top:36px; padding-top:6px;"><div style="font-size:11px; font-weight:700;"><t t-esc="rec.partner_id.name"/></div><div style="font-size:9px; color:#7f8c8d;">Firma del Cliente</div></div></td>
+                            </tr>
+                        </table>
+
+                        <div t-attf-style="margin-top:16px; border-top:3px solid #{p}; padding-top:5px; text-align:center;">
+                            <div style="font-size:8px; color:#bdc3c7;">Este recibo es valido como comprobante de pago - <t t-esc="co.name"/></div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entornos virtuales
+venv/
+.env/
+.venv/
+
+# IDEs / editores
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos temporales
+*.swp
+*.bak
+*.tmp
+
+# Odoo / datos sensibles
+odoo.conf
+*.conf
+*.dump
+*.sql
+filestore/

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_rst_loan_contract_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="co" t-value="doc.company_id"/>
+                <t t-set="p" t-value="brand.get('primary', '#1a3a5c')"/>
+                <t t-set="s" t-value="brand.get('secondary', '#2980b9')"/>
+                <t t-set="a" t-value="brand.get('accent', '#27ae60')"/>
+                <t t-set="d" t-value="brand.get('danger', '#c0392b')"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            table { page-break-inside: auto !important; }
+                            tr { page-break-inside: avoid !important; page-break-after: auto !important; }
+                            thead { display: table-header-group !important; }
+                            tfoot { display: table-footer-group !important; }
+                        </style>
+
+                        <div t-attf-style="border-bottom:3px solid #{p}; padding-bottom:14px; margin-bottom:16px;">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="width:18%; vertical-align:middle; text-align:center;">
+                                        <img t-if="co.logo" t-att-src="image_data_uri(co.logo)"
+                                             style="max-height:90px; max-width:160px; opacity:1 !important;" alt="Logo"/>
+                                    </td>
+                                    <td style="width:52%; vertical-align:middle; padding-left:14px;">
+                                        <div t-attf-style="font-size:20px; font-weight:800; color:#{p}; letter-spacing:0.5px;">
+                                            <t t-esc="co.name"/>
+                                        </div>
+                                        <t t-if="co.vat">
+                                            <div style="font-size:11px; color:#555; margin-top:2px; font-weight:600;">
+                                                RNC: <t t-esc="co.vat"/>
+                                            </div>
+                                        </t>
+                                        <t t-if="co.street">
+                                            <div style="font-size:10px; color:#777; margin-top:1px;">
+                                                <t t-esc="co.street"/>
+                                                <t t-if="co.street2">, <t t-esc="co.street2"/></t>
+                                                <t t-if="co.city">, <t t-esc="co.city"/></t>
+                                                <t t-if="co.state_id">, <t t-esc="co.state_id.name"/></t>
+                                            </div>
+                                        </t>
+                                        <div style="font-size:10px; color:#777; margin-top:1px;">
+                                            <t t-if="co.phone">Tel: <t t-esc="co.phone"/></t>
+                                            <t t-if="co.email"> | <t t-esc="co.email"/></t>
+                                            <t t-if="co.website"> | <t t-esc="co.website"/></t>
+                                        </div>
+                                    </td>
+                                    <td style="width:30%; vertical-align:middle; text-align:right;">
+                                        <div t-attf-style="font-size:26px; font-weight:800; color:#{p};">
+                                            <t t-esc="doc.name"/>
+                                        </div>
+                                        <div style="margin-top:4px;">
+                                            <t t-if="doc.state == 'active'"><span t-attf-style="background:#{a}; color:#fff; padding:4px 14px; border-radius:12px; font-size:11px; font-weight:700;">ACTIVO</span></t>
+                                            <t t-elif="doc.state == 'overdue'"><span t-attf-style="background:#{d}; color:#fff; padding:4px 14px; border-radius:12px; font-size:11px; font-weight:700;">VENCIDO</span></t>
+                                            <t t-elif="doc.state == 'paid'"><span style="background:#7f8c8d; color:#fff; padding:4px 14px; border-radius:12px; font-size:11px; font-weight:700;">PAGADO</span></t>
+                                            <t t-elif="doc.state == 'approved'"><span t-attf-style="background:#{s}; color:#fff; padding:4px 14px; border-radius:12px; font-size:11px; font-weight:700;">APROBADO</span></t>
+                                            <t t-else=""><span style="background:#95a5a6; color:#fff; padding:4px 14px; border-radius:12px; font-size:11px; font-weight:700; text-transform:uppercase;"><t t-esc="doc.state"/></span></t>
+                                        </div>
+                                        <div style="font-size:9px; color:#999; margin-top:6px;">
+                                            Emitido: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div t-attf-style="background:#{p}; color:#fff; padding:12px 18px; border-radius:8px; margin-bottom:16px; text-align:center;">
+                            <div style="font-size:20px; font-weight:800; letter-spacing:2px;">CONTRATO DE PRESTAMO</div>
+                            <div style="font-size:11px; opacity:.8; margin-top:2px;">Documento Legal - Acuerdo Financiero</div>
+                        </div>
+
+                        <table style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+                            <tr>
+                                <td style="width:50%; vertical-align:top; padding-right:10px;">
+                                    <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden;">
+                                        <div t-attf-style="background:#{p}; color:#fff; padding:7px 14px; font-size:11px; font-weight:700; letter-spacing:1px;">DATOS DEL CLIENTE</div>
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <tr><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; width:35%; border-bottom:1px solid #f0f0f0;">Cliente</td><td style="padding:5px 14px; font-weight:700; font-size:12px; border-bottom:1px solid #f0f0f0;"><t t-esc="doc.partner_id.name"/></td></tr>
+                                            <tr t-if="doc.partner_id.vat" style="background:#f8f9fa;"><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; border-bottom:1px solid #f0f0f0;">Cedula / RNC</td><td style="padding:5px 14px; font-size:11px; border-bottom:1px solid #f0f0f0;"><t t-esc="doc.partner_id.vat"/></td></tr>
+                                            <tr t-if="doc.partner_id.street"><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; border-bottom:1px solid #f0f0f0;">Direccion</td><td style="padding:5px 14px; font-size:11px; border-bottom:1px solid #f0f0f0;"><t t-esc="doc.partner_id.street"/><t t-if="doc.partner_id.city">, <t t-esc="doc.partner_id.city"/></t></td></tr>
+                                            <tr t-if="doc.partner_id.phone" style="background:#f8f9fa;"><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; border-bottom:1px solid #f0f0f0;">Telefono</td><td style="padding:5px 14px; font-size:11px; border-bottom:1px solid #f0f0f0;"><t t-esc="doc.partner_id.phone"/></td></tr>
+                                            <tr t-if="doc.partner_id.email"><td style="padding:5px 14px; color:#7f8c8d; font-size:10px;">Email</td><td style="padding:5px 14px; font-size:11px;"><t t-esc="doc.partner_id.email"/></td></tr>
+                                        </table>
+                                    </div>
+                                </td>
+                                <td style="width:50%; vertical-align:top; padding-left:10px;">
+                                    <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden;">
+                                        <div t-attf-style="background:#{p}; color:#fff; padding:7px 14px; font-size:11px; font-weight:700; letter-spacing:1px;">DATOS DEL CONTRATO</div>
+                                        <table style="width:100%; border-collapse:collapse;">
+                                            <tr><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; width:40%; border-bottom:1px solid #f0f0f0;">No. Contrato</td><td t-attf-style="padding:5px 14px; font-weight:700; font-size:12px; border-bottom:1px solid #f0f0f0; color:#{p};"><t t-esc="doc.name"/></td></tr>
+                                            <tr style="background:#f8f9fa;"><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; border-bottom:1px solid #f0f0f0;">Tipo Prestamo</td><td style="padding:5px 14px; font-size:11px; border-bottom:1px solid #f0f0f0;"><t t-esc="doc.loan_type_id.name or 'Personalizado'"/></td></tr>
+                                            <tr><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; border-bottom:1px solid #f0f0f0;">Oficial de Credito</td><td style="padding:5px 14px; font-size:11px; border-bottom:1px solid #f0f0f0;"><t t-esc="doc.loan_officer_id.name"/></td></tr>
+                                            <tr style="background:#f8f9fa;"><td style="padding:5px 14px; color:#7f8c8d; font-size:10px; border-bottom:1px solid #f0f0f0;">Fecha de Inicio</td><td style="padding:5px 14px; font-size:11px; border-bottom:1px solid #f0f0f0;"><span t-field="doc.date_start"/></td></tr>
+                                            <tr><td style="padding:5px 14px; color:#7f8c8d; font-size:10px;">Fecha Vencimiento</td><td style="padding:5px 14px; font-size:11px; font-weight:600;"><span t-field="doc.date_end"/></td></tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden; margin-bottom:16px;">
+                            <div t-attf-style="background:#{p}; color:#fff; padding:7px 14px; font-size:11px; font-weight:700; letter-spacing:1px;">CONDICIONES FINANCIERAS</div>
+                            <div style="padding:10px;">
+                                <table style="width:100%; border-collapse:separate; border-spacing:5px;">
+                                    <tr>
+                                        <td style="width:33%; text-align:center; background:#eaf2f8; border:1px solid #d4e2ed; border-radius:6px; padding:10px 8px;">
+                                            <div style="font-size:9px; color:#5d7b96; text-transform:uppercase; font-weight:600;">Monto del Prestamo</div>
+                                            <div t-attf-style="font-size:17px; font-weight:800; color:#{p}; margin-top:2px;"><t t-esc="'{:,.2f}'.format(doc.amount)"/> <span style="font-size:11px;"><t t-esc="doc.currency_id.symbol"/></span></div>
+                                        </td>
+                                        <td style="width:33%; text-align:center; background:#f0f0f0; border:1px solid #ddd; border-radius:6px; padding:10px 8px;">
+                                            <div style="font-size:9px; color:#7f8c8d; text-transform:uppercase; font-weight:600;">Tasa de Interes Anual</div>
+                                            <div style="font-size:17px; font-weight:800; color:#2c3e50; margin-top:2px;"><t t-esc="'%.2f' % doc.interest_rate"/>%</div>
+                                        </td>
+                                        <td style="width:33%; text-align:center; background:#f0f0f0; border:1px solid #ddd; border-radius:6px; padding:10px 8px;">
+                                            <div style="font-size:9px; color:#7f8c8d; text-transform:uppercase; font-weight:600;">Plazo</div>
+                                            <div style="font-size:17px; font-weight:800; color:#2c3e50; margin-top:2px;"><t t-esc="doc.term_months"/> <span style="font-size:11px;">meses</span></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table style="width:100%; border-collapse:separate; border-spacing:5px; margin-top:1px;">
+                                    <tr>
+                                        <td style="width:33%; text-align:center; background:#eafaf1; border:1px solid #a9dfbf; border-radius:6px; padding:10px 8px;">
+                                            <div t-attf-style="font-size:9px; color:#{a}; text-transform:uppercase; font-weight:600;">Cuota</div>
+                                            <div t-attf-style="font-size:16px; font-weight:800; color:#{a}; margin-top:2px;"><t t-esc="'{:,.2f}'.format(doc.installment_amount)"/> <span style="font-size:11px;"><t t-esc="doc.currency_id.symbol"/></span></div>
+                                        </td>
+                                        <td style="width:33%; text-align:center; background:#fef9e7; border:1px solid #f9e79f; border-radius:6px; padding:10px 8px;">
+                                            <div style="font-size:9px; color:#b7950b; text-transform:uppercase; font-weight:600;">Total Intereses</div>
+                                            <div style="font-size:16px; font-weight:800; color:#b7950b; margin-top:2px;"><t t-esc="'{:,.2f}'.format(doc.total_interest)"/> <span style="font-size:11px;"><t t-esc="doc.currency_id.symbol"/></span></div>
+                                        </td>
+                                        <td style="width:33%; text-align:center; background:#fdedec; border:1px solid #f5b7b1; border-radius:6px; padding:10px 8px;">
+                                            <div t-attf-style="font-size:9px; color:#{d}; text-transform:uppercase; font-weight:600;">Total a Pagar</div>
+                                            <div t-attf-style="font-size:16px; font-weight:800; color:#{d}; margin-top:2px;"><t t-esc="'{:,.2f}'.format(doc.total_to_pay)"/> <span style="font-size:11px;"><t t-esc="doc.currency_id.symbol"/></span></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table style="width:100%; border-collapse:separate; border-spacing:5px; margin-top:1px;">
+                                    <tr>
+                                        <td style="width:33%; text-align:center; background:#f8f9fa; border:1px solid #e0e0e0; border-radius:6px; padding:8px;">
+                                            <div style="font-size:9px; color:#7f8c8d; text-transform:uppercase; font-weight:600;">Frecuencia de Pago</div>
+                                            <div style="font-size:13px; font-weight:700; color:#2c3e50; margin-top:2px;"><t t-if="doc.payment_frequency == 'monthly'">Mensual</t><t t-elif="doc.payment_frequency == 'biweekly'">Quincenal</t><t t-else="">Semanal</t></div>
+                                        </td>
+                                        <td style="width:33%; text-align:center; background:#f8f9fa; border:1px solid #e0e0e0; border-radius:6px; padding:8px;">
+                                            <div style="font-size:9px; color:#7f8c8d; text-transform:uppercase; font-weight:600;">Amortizacion</div>
+                                            <div style="font-size:13px; font-weight:700; color:#2c3e50; margin-top:2px;"><t t-if="doc.amortization_method == 'french'">Frances (Cuota Fija)</t><t t-else="">Interes Simple</t></div>
+                                        </td>
+                                        <td style="width:33%; text-align:center; background:#f8f9fa; border:1px solid #e0e0e0; border-radius:6px; padding:8px;">
+                                            <div style="font-size:9px; color:#7f8c8d; text-transform:uppercase; font-weight:600;">Dias de Gracia</div>
+                                            <div style="font-size:13px; font-weight:700; color:#2c3e50; margin-top:2px;"><t t-esc="doc.grace_days"/> dias</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="border:1px solid #dce1e6; border-radius:8px; overflow:hidden; margin-bottom:20px;">
+                            <div style="background:#f8f9fa; padding:7px 14px; font-size:10px; font-weight:700; color:#7f8c8d; letter-spacing:1px; border-bottom:1px solid #dce1e6;">CONDICIONES GENERALES</div>
+                            <div style="padding:10px 14px; font-size:9px; color:#5d6d7e; line-height:1.6;">
+                                <p style="margin:0 0 4px 0;"><strong>1.</strong> El deudor se compromete a pagar las cuotas en las fechas del cronograma de pagos.</p>
+                                <p style="margin:0 0 4px 0;"><strong>2.</strong> En caso de mora se aplicara un cargo segun las condiciones del contrato.</p>
+                                <p style="margin:0 0 4px 0;"><strong>3.</strong> El deudor podra realizar pagos anticipados sujeto a las penalidades establecidas.</p>
+                                <p style="margin:0 0 4px 0;"><strong>4.</strong> Este contrato se rige por las leyes de la Republica Dominicana.</p>
+                                <p style="margin:0;"><strong>5.</strong> Ambas partes declaran estar conformes con las condiciones aqui establecidas.</p>
+                            </div>
+                        </div>
+
+                        <table style="width:100%; margin-top:24px;">
+                            <tr>
+                                <td style="width:45%; text-align:center;"><div t-attf-style="border-top:2px solid #{p}; margin-top:50px; padding-top:8px;"><div style="font-size:12px; font-weight:700;"><t t-esc="doc.partner_id.name"/></div><div style="font-size:10px; color:#7f8c8d;">Deudor / Cliente</div><t t-if="doc.partner_id.vat"><div style="font-size:9px; color:#95a5a6;">Cedula: <t t-esc="doc.partner_id.vat"/></div></t></div></td>
+                                <td style="width:10%;"/>
+                                <td style="width:45%; text-align:center;"><div t-attf-style="border-top:2px solid #{p}; margin-top:50px; padding-top:8px;"><div style="font-size:12px; font-weight:700;"><t t-esc="doc.loan_officer_id.name"/></div><div style="font-size:10px; color:#7f8c8d;">Oficial de Credito</div><div style="font-size:9px; color:#95a5a6;"><t t-esc="co.name"/></div></div></td>
+                            </tr>
+                        </table>
+
+                        <div t-attf-style="margin-top:24px; border-top:3px solid #{p}; padding-top:6px; text-align:center;">
+                            <div style="font-size:8px; color:#bdc3c7;">Documento generado por el Sistema de Gestion de Prestamos - <t t-esc="co.name"/></div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

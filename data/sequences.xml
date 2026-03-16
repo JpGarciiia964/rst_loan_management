@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Secuencia de Contratos: 10 dígitos numéricos desde 1000000000 -->
+        <record id="seq_rst_loan_contract" model="ir.sequence">
+            <field name="name">RST Contrato de Préstamo</field>
+            <field name="code">rst.loan.contract</field>
+            <field name="prefix"></field>
+            <field name="suffix"></field>
+            <field name="padding">10</field>
+            <field name="number_next">1000000000</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="False"/>
+        </record>
+
+        <!-- Secuencia de Pagos -->
+        <record id="seq_rst_loan_payment" model="ir.sequence">
+            <field name="name">RST Pago de Préstamo</field>
+            <field name="code">rst.loan.payment</field>
+            <field name="prefix">RST/PAGO/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

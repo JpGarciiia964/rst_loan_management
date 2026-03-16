@@ -1,0 +1,388 @@
+/* ═══════════════════════════════════════════════════════════════
+   RST LOAN MANAGEMENT — Kanban Card Styles v2.0
+   Design: Clean financial dashboard aesthetic
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Card principal ─────────────────────────────────────────── */
+.rst_loan_card {
+    border-radius: 12px !important;
+    border: none !important;
+    overflow: hidden;
+    transition: box-shadow 0.25s ease, transform 0.2s ease;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.rst_loan_card:hover {
+    box-shadow: 0 10px 28px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.06) !important;
+    transform: translateY(-3px);
+}
+
+.rst_loan_card_overdue {
+    border-left: 4px solid #e74c3c !important;
+}
+
+/* ── Cabecera ──────────────────────────────────────────────── */
+.rst_loan_card_header {
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rst_state_draft        { background: linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%); border-bottom: 2px solid #c8ced6; }
+.rst_state_in_review    { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); border-bottom: 2px solid #f9a825; }
+.rst_state_approved     { background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); border-bottom: 2px solid #00acc1; }
+.rst_state_active       { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-bottom: 2px solid #43a047; }
+.rst_state_overdue      { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); border-bottom: 2px solid #e53935; }
+.rst_state_paid         { background: linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%); border-bottom: 2px solid #78909c; }
+.rst_state_cancelled    { background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); border-bottom: 2px solid #bdbdbd; }
+
+.rst_contract_number {
+    font-size: 0.82rem;
+    letter-spacing: 0.4px;
+    color: #37474f;
+}
+
+.rst_loan_type {
+    font-size: 0.72rem;
+    color: #78909c;
+    font-weight: 500;
+}
+
+/* ── Cuerpo ─────────────────────────────────────────────────── */
+.rst_loan_card_body {
+    padding: 12px 14px 8px;
+}
+
+/* ── Avatar y cliente ───────────────────────────────────────── */
+.rst_partner_avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.rst_client_name {
+    font-size: 0.88rem;
+    color: #263238;
+    line-height: 1.25;
+}
+
+/* ── Clasificación del cliente ───────────────────────────────── */
+.rst_classification {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.rst_class_preferred  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+.rst_class_normal     { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+.rst_class_delinquent { background: #fce4ec; color: #c62828; border: 1px solid #ef9a9a; }
+
+/* ── Tasa badge ──────────────────────────────────────────────── */
+.rst_rate_badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #1565c0;
+    background: #e3f2fd;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 1px solid #90caf9;
+}
+
+/* ── Monto principal destacado ──────────────────────────────── */
+.rst_main_amount {
+    text-align: center;
+    padding: 8px 0;
+    margin: 6px 0;
+    background: linear-gradient(135deg, #f8f9fb 0%, #eef2f7 100%);
+    border-radius: 8px;
+    border: 1px solid #e3e8ef;
+}
+
+.rst_main_amount_label {
+    font-size: 0.62rem;
+    color: #90a4ae;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+}
+
+.rst_main_amount_value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #263238;
+    line-height: 1.3;
+}
+
+/* ── Grid de datos ──────────────────────────────────────────── */
+.rst_data_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin: 6px 0;
+}
+
+.rst_data_item {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: #f8f9fa;
+}
+
+.rst_data_label {
+    font-size: 0.6rem;
+    color: #90a4ae;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.rst_data_value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #37474f;
+    line-height: 1.3;
+}
+
+.rst_data_value.text-danger { color: #e53935 !important; }
+.rst_data_value.text-success { color: #2e7d32 !important; }
+
+/* ── Cuotas pagadas X/Y ─────────────────────────────────────── */
+.rst_installment_tracker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    background: #f5f7fa;
+    border-radius: 8px;
+    margin: 6px 0;
+}
+
+.rst_installment_label {
+    font-size: 0.68rem;
+    color: #78909c;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.rst_installment_count {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #37474f;
+}
+
+.rst_installment_count .paid_num { color: #43a047; }
+.rst_installment_count .total_num { color: #78909c; }
+
+/* ── Barra de progreso ───────────────────────────────────────── */
+.rst_progress_wrapper { padding: 0; }
+
+.rst_progress_bar {
+    height: 8px;
+    background: #eceff1;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.rst_progress_fill {
+    height: 100%;
+    background: linear-gradient(90deg, #66bb6a, #43a047);
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 3px;
+    position: relative;
+}
+
+.rst_progress_fill::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 12px; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+    border-radius: 0 4px 4px 0;
+}
+
+.rst_progress_fill.rst_progress_complete {
+    background: linear-gradient(90deg, #43a047, #2e7d32);
+}
+
+.rst_progress_fill.rst_progress_overdue {
+    background: linear-gradient(90deg, #ef5350, #e53935);
+}
+
+.rst_progress_pct {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #546e7a;
+}
+
+/* ── Alertas ─────────────────────────────────────────────────── */
+.rst_overdue_alert {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border: 1px solid #ffb74d;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    color: #e65100;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rst_mora_alert {
+    background: linear-gradient(135deg, #fff8e1, #ffecb3);
+    border: 1px solid #ffd54f;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    color: #f57f17;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rst_docs_alert {
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    border: 1px solid #f48fb1;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    color: #c62828;
+    font-weight: 600;
+}
+
+/* ── Semáforo próximo vencimiento ──────────────────────────── */
+.rst_due_soon {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+.rst_due_danger  { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+.rst_due_warning { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+.rst_due_ok      { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+
+/* ── Monto cuota mensual ────────────────────────────────────── */
+.rst_installment_badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: #ede7f6;
+    color: #5e35b1;
+    border: 1px solid #ce93d8;
+}
+
+/* ── Footer ───────────────────────────────────────────────────── */
+.rst_loan_card_footer {
+    padding: 8px 14px;
+    background: linear-gradient(180deg, #f8f9fb, #f1f3f6);
+    border-top: 1px solid #e8ecf0;
+}
+
+.rst_footer_info {
+    font-size: 0.7rem;
+    color: #78909c;
+    font-weight: 500;
+}
+
+.rst_officer_avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #cfd8dc;
+}
+
+/* ── Botones de acción ───────────────────────────────────────── */
+.rst_btn_pay {
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+    color: #fff !important;
+    border: none;
+    border-radius: 8px;
+    height: 30px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(46,125,50,0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.rst_btn_pay:hover {
+    background: linear-gradient(135deg, #388e3c, #1b5e20);
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(46,125,50,0.35);
+    transform: translateY(-1px);
+}
+
+.rst_btn_approve {
+    background: linear-gradient(135deg, #0288d1, #01579b);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(1,87,155,0.2);
+}
+
+.rst_btn_approve:hover {
+    background: linear-gradient(135deg, #01579b, #002f6c);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(1,87,155,0.35);
+    transform: translateY(-1px);
+}
+
+/* ── Separador sutil ──────────────────────────────────────────── */
+.rst_divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+    margin: 6px 0;
+}
+
+/* ── Columnas del Kanban ─────────────────────────────────────── */
+.o_rst_loan_kanban .o_kanban_group {
+    background: #f0f2f5;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.o_rst_loan_kanban .o_column_title {
+    font-weight: 800;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #455a64;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .rst_data_grid { grid-template-columns: 1fr 1fr; }
+    .rst_loan_card { min-height: auto; }
+}

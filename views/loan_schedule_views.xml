@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_rst_loan_schedule_list" model="ir.ui.view">
+        <field name="name">rst.loan.schedule.list</field>
+        <field name="model">rst.loan.schedule</field>
+        <field name="arch" type="xml">
+            <tree string="Cronograma de Cuotas"
+                  decoration-danger="state == 'overdue'"
+                  decoration-success="state == 'paid'"
+                  decoration-warning="state == 'partial'">
+                <field name="contract_id"/>
+                <field name="partner_id"/>
+                <field name="sequence" string="#"/>
+                <field name="date_due"/>
+                <field name="amount_principal" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="amount_interest" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="amount_due" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="amount_paid" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="amount_pending" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="balance_after" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="date_paid"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'overdue'"
+                       decoration-success="state == 'paid'"
+                       decoration-warning="state == 'partial'"
+                       decoration-info="state == 'pending'"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_rst_loan_schedule_form" model="ir.ui.view">
+        <field name="name">rst.loan.schedule.form</field>
+        <field name="model">rst.loan.schedule</field>
+        <field name="arch" type="xml">
+            <form string="Cuota de Préstamo">
+                <sheet>
+                    <group>
+                        <group string="Datos de la Cuota">
+                            <field name="contract_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="sequence" readonly="1"/>
+                            <field name="state" widget="badge"
+                                   decoration-danger="state == 'overdue'"
+                                   decoration-success="state == 'paid'"
+                                   decoration-warning="state == 'partial'"
+                                   decoration-info="state == 'pending'"/>
+                        </group>
+                        <group string="Montos">
+                            <field name="amount_principal" readonly="1"/>
+                            <field name="amount_interest" readonly="1"/>
+                            <field name="amount_due" readonly="1"/>
+                            <field name="amount_paid" readonly="1"/>
+                            <field name="amount_pending" readonly="1"/>
+                            <field name="balance_after" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Fechas">
+                            <field name="date_due"/>
+                            <field name="date_paid" readonly="1"/>
+                        </group>
+                        <group string="Notas">
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_rst_loan_schedule_search" model="ir.ui.view">
+        <field name="name">rst.loan.schedule.search</field>
+        <field name="model">rst.loan.schedule</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Cuotas">
+                <field name="contract_id"/>
+                <field name="partner_id"/>
+                <filter string="Pendientes" name="pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter string="Vencidas" name="overdue"
+                        domain="[('state', '=', 'overdue')]"/>
+                <filter string="Pago Parcial" name="partial"
+                        domain="[('state', '=', 'partial')]"/>
+                <filter string="Pagadas" name="paid"
+                        domain="[('state', '=', 'paid')]"/>
+                <separator/>
+                <filter string="Vence Hoy" name="due_today"
+                        domain="[('date_due', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Contrato" name="group_contract"
+                            context="{'group_by': 'contract_id'}"/>
+                    <filter string="Cliente" name="group_partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Estado" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Mes de Vencimiento" name="group_month"
+                            context="{'group_by': 'date_due:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rst_loan_schedule" model="ir.actions.act_window">
+        <field name="name">Cronograma de Cuotas</field>
+        <field name="res_model">rst.loan.schedule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_rst_loan_schedule_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sin cuotas programadas</p>
+            <p>Las cuotas se generan automáticamente al activar un contrato de préstamo.</p>
+        </field>
+    </record>
+
+</odoo>

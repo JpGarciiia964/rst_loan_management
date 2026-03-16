@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Dashboard de Préstamos RST -->
+    <record id="view_rst_loan_dashboard" model="ir.ui.view">
+        <field name="name">rst.loan.dashboard</field>
+        <field name="model">rst.loan.contract</field>
+        <field name="arch" type="xml">
+            <graph string="Análisis de Préstamos" type="bar">
+                <field name="state"/>
+                <field name="amount" type="measure"/>
+                <field name="balance_remaining" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot para análisis -->
+    <record id="view_rst_loan_pivot" model="ir.ui.view">
+        <field name="name">rst.loan.contract.pivot</field>
+        <field name="model">rst.loan.contract</field>
+        <field name="arch" type="xml">
+            <pivot string="Análisis de Préstamos" disable_linking="False">
+                <field name="loan_type_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="amount" type="measure"/>
+                <field name="balance_remaining" type="measure"/>
+                <field name="total_interest" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Acción del dashboard -->
+    <record id="action_rst_loan_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard Préstamos</field>
+        <field name="res_model">rst.loan.contract</field>
+        <field name="view_mode">graph,pivot,tree</field>
+        <field name="context">{
+            'search_default_active_loans': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sin datos para mostrar</p>
+            <p>Cree y active contratos para ver métricas en el dashboard.</p>
+        </field>
+    </record>
+
+    <!-- Acción: Análisis de pagos -->
+    <record id="view_rst_loan_payment_graph" model="ir.ui.view">
+        <field name="name">rst.loan.payment.graph</field>
+        <field name="model">rst.loan.payment</field>
+        <field name="arch" type="xml">
+            <graph string="Análisis de Pagos" type="bar">
+                <field name="date_payment" interval="month"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_rst_loan_payment_analysis" model="ir.actions.act_window">
+        <field name="name">Análisis de Pagos</field>
+        <field name="res_model">rst.loan.payment</field>
+        <field name="view_mode">graph,pivot,tree</field>
+        <field name="domain">[('state', '=', 'confirmed')]</field>
+    </record>
+
+</odoo>

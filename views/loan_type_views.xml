@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_rst_loan_type_list" model="ir.ui.view">
+        <field name="name">rst.loan.type.list</field>
+        <field name="model">rst.loan.type</field>
+        <field name="arch" type="xml">
+            <tree string="Tipos de Préstamo" multi_edit="1">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="interest_rate" string="Tasa Anual %"/>
+                <field name="min_term" string="Plazo Mín."/>
+                <field name="max_term" string="Plazo Máx."/>
+                <field name="min_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="max_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="payment_frequency"/>
+                <field name="amortization_method"/>
+                <field name="grace_days" string="Dias Gracia"/>
+                <field name="late_fee_type" string="Tipo Mora"/>
+                <field name="late_fee_value" string="Valor Mora"/>
+                <field name="contract_count" string="Contratos"/>
+                <field name="active" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_rst_loan_type_form" model="ir.ui.view">
+        <field name="name">rst.loan.type.form</field>
+        <field name="model">rst.loan.type</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de Préstamo">
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_contracts" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="contract_count" widget="statinfo" string="Contratos"/>
+                        </button>
+                    </div>
+
+                    <field name="active" invisible="1"/>
+                    <div class="alert alert-warning mb-0 d-flex align-items-center"
+                         attrs="{'invisible': [('active', '=', True)]}">
+                        <i class="fa fa-archive me-2"/>
+                        <strong>Este tipo de préstamo está archivado.</strong>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Ej: Préstamo Personal"/></h1>
+                        <field name="code" placeholder="Código único"/>
+                    </div>
+
+                    <group>
+                        <group string="Condiciones Financieras">
+                            <field name="interest_rate"/>
+                            <field name="payment_frequency"/>
+                            <field name="amortization_method"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                        <group string="Montos y Plazos">
+                            <field name="min_amount"/>
+                            <field name="max_amount"/>
+                            <field name="min_term"/>
+                            <field name="max_term"/>
+                        </group>
+                    </group>
+
+                    <!-- Parametrización de Mora -->
+                    <group string="Parametrizacion de Mora">
+                        <group>
+                            <field name="grace_days"
+                                   help="Dias de gracia tras el vencimiento antes de cobrar mora. 0 = mora inmediata."/>
+                            <field name="late_fee_type"
+                                   help="Porcentaje: mora sobre el monto de la cuota. Fijo: monto fijo en moneda."/>
+                            <field name="late_fee_value"
+                                   help="Si es porcentaje: ej. 2 = 2% del monto de la cuota. Si es fijo: monto exacto."/>
+                        </group>
+                        <div class="alert alert-info col-12" style="margin:4px 0 0 0;">
+                            <i class="fa fa-info-circle me-1"/>
+                            Estos valores se copian al crear un contrato de este tipo y pueden ajustarse por contrato antes del desembolso.
+                        </div>
+                    </group>
+
+                    <group string="Documentos Requeridos">
+                        <field name="required_document_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                                <field name="is_mandatory"/>
+                                <field name="description"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group string="Notas">
+                        <field name="notes" nolabel="1" placeholder="Descripción del tipo de préstamo..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_rst_loan_type_search" model="ir.ui.view">
+        <field name="name">rst.loan.type.search</field>
+        <field name="model">rst.loan.type</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Tipos">
+                <field name="name"/>
+                <field name="code"/>
+                <filter string="Activos" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archivados" name="archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Frecuencia de Pago" name="group_freq"
+                            context="{'group_by': 'payment_frequency'}"/>
+                    <filter string="Método Amortización" name="group_method"
+                            context="{'group_by': 'amortization_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_rst_loan_type" model="ir.actions.act_window">
+        <field name="name">Tipos de Préstamo</field>
+        <field name="res_model">rst.loan.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_rst_loan_type_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Configure su primer tipo de préstamo</p>
+            <p>Defina tasas, plazos y documentos requeridos para cada producto financiero.</p>
+        </field>
+    </record>
+
+</odoo>

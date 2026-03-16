@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_rst_voucher_sequence_list" model="ir.ui.view">
+        <field name="name">rst.loan.voucher.sequence.list</field>
+        <field name="model">rst.loan.voucher.sequence</field>
+        <field name="arch" type="xml">
+            <tree string="Secuencias de Comprobantes">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="prefix"/>
+                <field name="padding"/>
+                <field name="next_number"/>
+                <field name="use_year"/>
+                <field name="is_fiscal"/>
+                <field name="is_default"/>
+                <field name="preview"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_rst_voucher_sequence_form" model="ir.ui.view">
+        <field name="name">rst.loan.voucher.sequence.form</field>
+        <field name="model">rst.loan.voucher.sequence</field>
+        <field name="arch" type="xml">
+            <form string="Secuencia de Comprobantes">
+                <sheet>
+                    <group>
+                        <group string="Identificación">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="is_fiscal"/>
+                            <field name="is_default"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Formato del Número">
+                            <field name="prefix"/>
+                            <field name="suffix"/>
+                            <field name="padding"/>
+                            <field name="use_year"/>
+                            <field name="next_number"/>
+                        </group>
+                    </group>
+                    <group string="Vista Previa">
+                        <field name="preview" readonly="1"/>
+                    </group>
+                    <group string="Descripción">
+                        <field name="description" nolabel="1"
+                               placeholder="Instrucciones de uso, rango válido, norma fiscal aplicable..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_rst_voucher_sequence" model="ir.actions.act_window">
+        <field name="name">Secuencias de Comprobantes</field>
+        <field name="res_model">rst.loan.voucher.sequence</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

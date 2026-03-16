@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_rst_loan_type_viewer,rst.loan.type viewer,model_rst_loan_type,group_rst_loan_viewer,1,0,0,0
+access_rst_loan_type_officer,rst.loan.type officer,model_rst_loan_type,group_rst_loan_officer,1,0,0,0
+access_rst_loan_type_manager,rst.loan.type manager,model_rst_loan_type,group_rst_loan_manager,1,1,1,1
+access_rst_loan_document_type_viewer,rst.loan.document.type viewer,model_rst_loan_document_type,group_rst_loan_viewer,1,0,0,0
+access_rst_loan_document_type_officer,rst.loan.document.type officer,model_rst_loan_document_type,group_rst_loan_officer,1,0,0,0
+access_rst_loan_document_type_manager,rst.loan.document.type manager,model_rst_loan_document_type,group_rst_loan_manager,1,1,1,1
+access_rst_loan_contract_viewer,rst.loan.contract viewer,model_rst_loan_contract,group_rst_loan_viewer,1,0,0,0
+access_rst_loan_contract_officer,rst.loan.contract officer,model_rst_loan_contract,group_rst_loan_officer,1,1,1,0
+access_rst_loan_contract_manager,rst.loan.contract manager,model_rst_loan_contract,group_rst_loan_manager,1,1,1,1
+access_rst_loan_schedule_viewer,rst.loan.schedule viewer,model_rst_loan_schedule,group_rst_loan_viewer,1,0,0,0
+access_rst_loan_schedule_officer,rst.loan.schedule officer,model_rst_loan_schedule,group_rst_loan_officer,1,1,1,0
+access_rst_loan_schedule_manager,rst.loan.schedule manager,model_rst_loan_schedule,group_rst_loan_manager,1,1,1,1
+access_rst_loan_payment_viewer,rst.loan.payment viewer,model_rst_loan_payment,group_rst_loan_viewer,1,0,0,0
+access_rst_loan_payment_officer,rst.loan.payment officer,model_rst_loan_payment,group_rst_loan_officer,1,1,1,0
+access_rst_loan_payment_manager,rst.loan.payment manager,model_rst_loan_payment,group_rst_loan_manager,1,1,1,1
+access_rst_loan_document_viewer,rst.loan.document viewer,model_rst_loan_document,group_rst_loan_viewer,1,0,0,0
+access_rst_loan_document_officer,rst.loan.document officer,model_rst_loan_document,group_rst_loan_officer,1,1,1,0
+access_rst_loan_document_manager,rst.loan.document manager,model_rst_loan_document,group_rst_loan_manager,1,1,1,1
+access_rst_loan_payment_wizard,rst.loan.payment.wizard all,model_rst_loan_payment_wizard,group_rst_loan_officer,1,1,1,1
+
