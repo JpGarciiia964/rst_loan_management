@@ -354,6 +354,9 @@ El módulo se organiza funcionalmente en los siguientes componentes:
 
 ## Capturas del módulo
 
+### Vista General
+![Vista General](docs/screenshots/general.png)
+
 ### Tipos de préstamo
 ![Tipos de préstamo](docs/screenshots/loan_types.png)
 
