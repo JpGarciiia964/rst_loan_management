@@ -63,7 +63,7 @@
                         <h1><field name="name" readonly="1"/></h1>
                         <field name="voucher_number" readonly="1"
                                attrs="{'invisible': [('voucher_number', '=', False)]}"
-                               string="N° Comprobante"/>
+                               string="No. Comprobante"/>
                     </div>
                     <group>
                         <group string="Datos del Pago">
@@ -82,9 +82,71 @@
                             <field name="payment_method"
                                    attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="reference"
-                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'invisible': [('payment_method', 'in', ['cash', 'transfer', 'check'])]}"/>
                         </group>
                     </group>
+
+                    <!-- Efectivo: denominaciones -->
+                    <div attrs="{'invisible': [('payment_method', '!=', 'cash')]}"
+                         style="margin: 8px 0;">
+                        <h5 style="font-weight:600; margin-bottom:8px;">Denominaciones de Billetes / Monedas</h5>
+                        <field name="denomination_ids" nolabel="1"
+                               attrs="{'readonly': [('state', '!=', 'draft')]}">
+                            <tree editable="bottom" no_open="1" create="0" delete="0">
+                                <field name="denomination" string="Billete / Moneda (RD$)" readonly="1"/>
+                                <field name="quantity" string="Cantidad"/>
+                                <field name="subtotal" string="Subtotal (RD$)" readonly="1"/>
+                            </tree>
+                        </field>
+                        <div class="d-flex justify-content-end align-items-center mt-3 mb-2"
+                             style="padding-right:8px; font-size:15px;">
+                            <strong class="me-2">Total Efectivo Recibido:</strong>
+                            <field name="cash_total" readonly="1"
+                                   style="font-size:16px; font-weight:bold;"/>
+                        </div>
+                    </div>
+
+                    <!-- Transferencia -->
+                    <group string="Datos de la Transferencia"
+                           attrs="{'invisible': [('payment_method', '!=', 'transfer')]}">
+                        <group>
+                            <field name="transfer_ref" string="No. Comprobante"
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'required': [('payment_method', '=', 'transfer')]}"/>
+                            <field name="transfer_bank" string="Banco Emisor"
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'required': [('payment_method', '=', 'transfer')]}"/>
+                        </group>
+                        <group>
+                            <field name="transfer_amount" string="Monto Transferido"
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'required': [('payment_method', '=', 'transfer')]}"/>
+                        </group>
+                    </group>
+
+                    <!-- Cheque -->
+                    <group string="Datos del Cheque"
+                           attrs="{'invisible': [('payment_method', '!=', 'check')]}">
+                        <group>
+                            <field name="check_number" string="No. Cheque"
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'required': [('payment_method', '=', 'check')]}"/>
+                            <field name="check_bank" string="Banco Emisor"
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'required': [('payment_method', '=', 'check')]}"/>
+                        </group>
+                        <group>
+                            <field name="check_issuer" string="Nombre del Emisor"
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'required': [('payment_method', '=', 'check')]}"/>
+                            <field name="check_amount" string="Monto del Cheque"
+                                   attrs="{'readonly': [('state', '!=', 'draft')],
+                                           'required': [('payment_method', '=', 'check')]}"/>
+                        </group>
+                    </group>
+
+                    <!-- Saldos y desglose -->
                     <group string="Saldos y Desglose"
                            attrs="{'invisible': [('state', '!=', 'confirmed')]}">
                         <group>
@@ -105,6 +167,7 @@
                     <group string="Notas">
                         <field name="notes" nolabel="1"/>
                     </group>
+                    <field name="currency_id" invisible="1"/>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>

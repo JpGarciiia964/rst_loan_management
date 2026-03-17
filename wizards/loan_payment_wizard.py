@@ -64,13 +64,33 @@ class RstLoanPaymentWizard(models.TransientModel):
     )
     payment_method = fields.Selection([
         ('cash', 'Efectivo'),
-        ('transfer', 'Transferencia Bancaria'),
-        ('card', 'Tarjeta'),
+        ('transfer', 'Transferencia'),
         ('check', 'Cheque'),
         ('other', 'Otro'),
-    ], string='Método de Pago', default='cash', required=True)
-    reference = fields.Char('Referencia / N° Comprobante')
+    ], string='Metodo de Pago', default='cash', required=True)
+    reference = fields.Char('Referencia')
     notes = fields.Text('Notas')
+
+    # ── Efectivo: denominaciones ──────────────────────────────────────
+    denomination_ids = fields.One2many(
+        'rst.loan.payment.denomination.wizard', 'wizard_id',
+        string='Denominaciones')
+    cash_total = fields.Monetary(
+        'Total Efectivo', compute='_compute_cash_total',
+        currency_field='currency_id')
+
+    # ── Transferencia ─────────────────────────────────────────────────
+    transfer_bank = fields.Char('Banco Emisor')
+    transfer_ref = fields.Char('No. Comprobante')
+    transfer_amount = fields.Monetary(
+        'Monto Transferencia', currency_field='currency_id')
+
+    # ── Cheque ────────────────────────────────────────────────────────
+    check_number = fields.Char('No. Cheque')
+    check_bank = fields.Char('Banco del Cheque')
+    check_issuer = fields.Char('Nombre del Emisor')
+    check_amount = fields.Monetary(
+        'Monto del Cheque', currency_field='currency_id')
 
     # ── Info del contrato ─────────────────────────────────────────────────
     balance_remaining = fields.Monetary(
@@ -108,6 +128,23 @@ class RstLoanPaymentWizard(models.TransientModel):
                 (rec.contract_id.balance_remaining or 0)
                 + (rec.contract_id.cancellation_penalty_amount or 0)
             )
+
+    @api.depends('denomination_ids.subtotal')
+    def _compute_cash_total(self):
+        for rec in self:
+            rec.cash_total = sum(rec.denomination_ids.mapped('subtotal'))
+
+    # =========================================================
+    # Onchange
+    # =========================================================
+
+    @api.onchange('payment_method')
+    def _onchange_payment_method(self):
+        """Pre-cargar denominaciones dominicanas al seleccionar Efectivo."""
+        if self.payment_method == 'cash' and not self.denomination_ids:
+            denoms = [2000, 1000, 500, 200, 100, 50, 25, 10, 5, 1, 0.50, 0.25, 0.10, 0.05, 0.01]
+            cmds = [(0, 0, {'denomination': d, 'quantity': 0}) for d in denoms]
+            self.update({'denomination_ids': cmds})
 
     # =========================================================
     # Onchange
@@ -154,7 +191,7 @@ class RstLoanPaymentWizard(models.TransientModel):
     def action_register_payment(self):
         """Crea el pago, lo confirma y abre la boleta para imprimir."""
         self.ensure_one()
-        payment = self.env['rst.loan.payment'].create({
+        payment_vals = {
             'contract_id': self.contract_id.id,
             'partner_id': self.partner_id.id,
             'schedule_id': self.next_installment_id.id if self.next_installment_id else False,
@@ -164,6 +201,25 @@ class RstLoanPaymentWizard(models.TransientModel):
             'reference': self.reference,
             'notes': self.notes,
             'balance_before': self.contract_id.balance_remaining,
-        })
-        # action_confirm retorna la acción de imprimir boleta
+            # Transferencia
+            'transfer_bank': self.transfer_bank,
+            'transfer_ref': self.transfer_ref,
+            'transfer_amount': self.transfer_amount,
+            # Cheque
+            'check_number': self.check_number,
+            'check_bank': self.check_bank,
+            'check_issuer': self.check_issuer,
+            'check_amount': self.check_amount,
+        }
+        payment = self.env['rst.loan.payment'].create(payment_vals)
+
+        # Copiar denominaciones del wizard al pago
+        if self.payment_method == 'cash' and self.denomination_ids:
+            for denom in self.denomination_ids.filtered(lambda d: d.quantity > 0):
+                self.env['rst.loan.payment.denomination'].create({
+                    'payment_id': payment.id,
+                    'denomination': denom.denomination,
+                    'quantity': denom.quantity,
+                })
+
         return payment.action_confirm()

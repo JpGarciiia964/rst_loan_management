@@ -9,3 +9,4 @@ from . import loan_voucher_sequence
 from . import res_config_settings
 from . import loan_report
 from . import res_users
+from . import loan_payment_denomination

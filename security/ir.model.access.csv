@@ -18,4 +18,7 @@ access_rst_loan_document_viewer,rst.loan.document viewer,model_rst_loan_document
 access_rst_loan_document_officer,rst.loan.document officer,model_rst_loan_document,group_rst_loan_officer,1,1,1,0
 access_rst_loan_document_manager,rst.loan.document manager,model_rst_loan_document,group_rst_loan_manager,1,1,1,1
 access_rst_loan_payment_wizard,rst.loan.payment.wizard all,model_rst_loan_payment_wizard,group_rst_loan_officer,1,1,1,1
-
+access_rst_loan_denom_viewer,rst.loan.payment.denomination viewer,model_rst_loan_payment_denomination,group_rst_loan_viewer,1,0,0,0
+access_rst_loan_denom_officer,rst.loan.payment.denomination officer,model_rst_loan_payment_denomination,group_rst_loan_officer,1,1,1,1
+access_rst_loan_denom_manager,rst.loan.payment.denomination manager,model_rst_loan_payment_denomination,group_rst_loan_manager,1,1,1,1
+access_rst_loan_denom_wiz_officer,rst.loan.payment.denomination.wizard officer,model_rst_loan_payment_denomination_wizard,group_rst_loan_officer,1,1,1,1

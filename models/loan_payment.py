@@ -30,9 +30,30 @@ class RstLoanPayment(models.Model):
         ('transfer', 'Transferencia'),
         ('check',    'Cheque'),
         ('other',    'Otro'),
-    ], string='Método de Pago', default='cash', required=True, tracking=True)
-    reference    = fields.Char('Referencia / N° Cheque')
+    ], string='Metodo de Pago', default='cash', required=True, tracking=True)
+    reference    = fields.Char('Referencia')
     notes        = fields.Text('Notas')
+
+    # ── Efectivo: denominaciones ──────────────────────────────────────
+    denomination_ids = fields.One2many(
+        'rst.loan.payment.denomination', 'payment_id',
+        string='Denominaciones')
+    cash_total = fields.Monetary(
+        'Total Efectivo', compute='_compute_cash_total',
+        currency_field='currency_id', store=True)
+
+    # ── Transferencia ─────────────────────────────────────────────────
+    transfer_bank = fields.Char('Banco Emisor')
+    transfer_ref = fields.Char('No. Comprobante Transferencia')
+    transfer_amount = fields.Monetary(
+        'Monto Transferencia', currency_field='currency_id')
+
+    # ── Cheque ────────────────────────────────────────────────────────
+    check_number = fields.Char('No. Cheque')
+    check_bank = fields.Char('Banco Emisor Cheque')
+    check_issuer = fields.Char('Nombre del Emisor')
+    check_amount = fields.Monetary(
+        'Monto del Cheque', currency_field='currency_id')
     currency_id  = fields.Many2one(related='contract_id.currency_id', store=True)
     loan_officer_id = fields.Many2one(related='contract_id.loan_officer_id',
                                        string='Oficial', store=True)
@@ -96,6 +117,64 @@ class RstLoanPayment(models.Model):
             if r.amount <= 0:
                 raise ValidationError(_('El monto del pago debe ser mayor a cero.'))
 
+    @api.depends('denomination_ids.subtotal')
+    def _compute_cash_total(self):
+        for rec in self:
+            rec.cash_total = sum(rec.denomination_ids.mapped('subtotal'))
+
+    def _validate_payment_method(self):
+        """Valida campos segun metodo de pago antes de confirmar."""
+        self.ensure_one()
+        tol = 0.01
+        if self.payment_method == 'cash':
+            if not self.denomination_ids or self.cash_total <= 0:
+                raise UserError(_(
+                    'Debe ingresar las denominaciones de billetes/monedas '
+                    'para pagos en efectivo.'
+                ))
+            if abs(self.cash_total - self.amount) > tol:
+                raise UserError(_(
+                    'El total de denominaciones (%s %s) no coincide '
+                    'con el monto de la cuota (%s %s).\n'
+                    'Diferencia: %s %s'
+                ) % (
+                    self.currency_id.symbol, self.cash_total,
+                    self.currency_id.symbol, self.amount,
+                    self.currency_id.symbol, abs(self.cash_total - self.amount),
+                ))
+        elif self.payment_method == 'transfer':
+            if not self.transfer_ref:
+                raise UserError(_('Debe ingresar el numero de comprobante de la transferencia.'))
+            if not self.transfer_bank:
+                raise UserError(_('Debe ingresar el banco emisor de la transferencia.'))
+            if not self.transfer_amount or self.transfer_amount <= 0:
+                raise UserError(_('Debe ingresar el monto de la transferencia.'))
+            if abs(self.transfer_amount - self.amount) > tol:
+                raise UserError(_(
+                    'El monto de la transferencia (%s %s) no coincide '
+                    'con el monto de la cuota (%s %s).'
+                ) % (
+                    self.currency_id.symbol, self.transfer_amount,
+                    self.currency_id.symbol, self.amount,
+                ))
+        elif self.payment_method == 'check':
+            if not self.check_number:
+                raise UserError(_('Debe ingresar el numero del cheque.'))
+            if not self.check_bank:
+                raise UserError(_('Debe ingresar el banco emisor del cheque.'))
+            if not self.check_issuer:
+                raise UserError(_('Debe ingresar el nombre del emisor del cheque.'))
+            if not self.check_amount or self.check_amount <= 0:
+                raise UserError(_('Debe ingresar el monto del cheque.'))
+            if abs(self.check_amount - self.amount) > tol:
+                raise UserError(_(
+                    'El monto del cheque (%s %s) no coincide '
+                    'con el monto de la cuota (%s %s).'
+                ) % (
+                    self.currency_id.symbol, self.check_amount,
+                    self.currency_id.symbol, self.amount,
+                ))
+
     # =========================================================
     # Actions
     # =========================================================
@@ -114,6 +193,9 @@ class RstLoanPayment(models.Model):
                 raise UserError(_('Solo se pueden confirmar pagos en Borrador.'))
             if rec.contract_id.state not in ('active', 'overdue'):
                 raise UserError(_('El contrato debe estar Activo o Vencido.'))
+
+            # Validar metodo de pago
+            rec._validate_payment_method()
 
             contract = rec.contract_id
             balance = contract.balance_remaining

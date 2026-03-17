@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RST Loan Management',
-    'version': '16.0.7.1.0',
+    'version': '16.0.7.3.0',
     'category': 'Finance',
     'summary': 'Gestión completa de préstamos - RST',
     'description': """
