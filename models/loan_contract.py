@@ -191,13 +191,14 @@ class RstLoanContract(models.Model):
 
     # ── Penalidad por cancelacion anticipada ─────────────────────────────
     cancellation_penalty_type = fields.Selection([
-        ('fixed',      'Monto Fijo'),
-        ('percentage', 'Porcentaje sobre saldo pendiente'),
+        ('fixed',          'Monto Fijo'),
+        ('percentage',     'Porcentaje sobre saldo pendiente'),
+        ('pct_disbursed',  'Porcentaje sobre monto desembolsado'),
     ], string='Tipo de Penalidad', default='percentage',
        help='Tipo de penalidad para cancelacion anticipada de contrato activo.')
     cancellation_penalty_value = fields.Float(
         'Valor de Penalidad', default=0.0,
-        help='Porcentaje (ej: 5 = 5% del saldo) o monto fijo a cobrar al cancelar anticipadamente.'
+        help='Porcentaje (ej: 5 = 5%) o monto fijo segun el tipo seleccionado.'
     )
     cancellation_penalty_amount = fields.Monetary(
         'Monto Penalidad', compute='_compute_cancellation_penalty',
@@ -327,12 +328,16 @@ class RstLoanContract(models.Model):
         for rec in self:
             rec.is_locked = rec.state in ('active', 'overdue', 'paid')
 
-    @api.depends('balance_remaining', 'cancellation_penalty_type', 'cancellation_penalty_value')
+    @api.depends('amount', 'balance_remaining', 'cancellation_penalty_type', 'cancellation_penalty_value')
     def _compute_cancellation_penalty(self):
         for rec in self:
             if rec.cancellation_penalty_type == 'percentage':
                 rec.cancellation_penalty_amount = round(
                     rec.balance_remaining * rec.cancellation_penalty_value / 100, 2
+                )
+            elif rec.cancellation_penalty_type == 'pct_disbursed':
+                rec.cancellation_penalty_amount = round(
+                    rec.amount * rec.cancellation_penalty_value / 100, 2
                 )
             else:
                 rec.cancellation_penalty_amount = rec.cancellation_penalty_value
