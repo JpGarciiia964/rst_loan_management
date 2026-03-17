@@ -220,7 +220,12 @@ class RstLoanContract(models.Model):
         for vals in vals_list:
             if vals.get('name', 'Nuevo') == 'Nuevo':
                 vals['name'] = self.env['ir.sequence'].next_by_code('rst.loan.contract') or 'Nuevo'
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        # Auto-poblar documentos requeridos si el tipo de prestamo tiene y no se crearon via onchange
+        for rec in records:
+            if rec.loan_type_id and rec.loan_type_id.required_document_ids:
+                rec._populate_required_documents()
+        return records
 
     def write(self, vals):
         """Previene regresion de estado en contratos bloqueados (activos/vencidos/pagados)."""
@@ -284,18 +289,33 @@ class RstLoanContract(models.Model):
             self.late_fee_value = lt.late_fee_value
             mid_term = (lt.min_term + lt.max_term) // 2
             self.term_months = mid_term
-            # Auto-poblar lista de documentos requeridos
+            # Auto-poblar documentos requeridos
             if lt.required_document_ids:
-                existing_types = self.document_ids.mapped('document_type_id')
-                new_docs = []
+                existing_type_ids = set(self.document_ids.mapped('document_type_id').ids)
+                cmds = []
                 for doc_type in lt.required_document_ids:
-                    if doc_type not in existing_types:
-                        new_docs.append((0, 0, {
+                    if doc_type.id not in existing_type_ids:
+                        cmds.append((0, 0, {
                             'document_type_id': doc_type.id,
-                            'is_mandatory': doc_type.is_mandatory,
+                            'state': 'pending',
                         }))
-                if new_docs:
-                    self.document_ids = new_docs
+                if cmds:
+                    self.update({'document_ids': cmds})
+
+    def _populate_required_documents(self):
+        """Crea lineas de documentos requeridos que falten en el contrato."""
+        self.ensure_one()
+        if not self.loan_type_id or not self.loan_type_id.required_document_ids:
+            return
+        existing_type_ids = set(self.document_ids.mapped('document_type_id').ids)
+        DocModel = self.env['rst.loan.document']
+        for doc_type in self.loan_type_id.required_document_ids:
+            if doc_type.id not in existing_type_ids:
+                DocModel.create({
+                    'contract_id': self.id,
+                    'document_type_id': doc_type.id,
+                    'state': 'pending',
+                })
 
 
     # =========================================================
@@ -402,6 +422,7 @@ class RstLoanContract(models.Model):
 
 
     @api.depends('document_ids', 'document_ids.document_type_id',
+                 'document_ids.file_data', 'document_ids.state',
                  'loan_type_id', 'loan_type_id.required_document_ids',
                  'loan_type_id.required_document_ids.is_mandatory')
     def _compute_missing_docs(self):
@@ -410,7 +431,10 @@ class RstLoanContract(models.Model):
                 rec.missing_documents = 0
                 continue
             required = rec.loan_type_id.required_document_ids.filtered('is_mandatory')
-            uploaded_types = rec.document_ids.mapped('document_type_id')
+            # Un documento esta completo si tiene archivo cargado
+            uploaded_types = rec.document_ids.filtered(
+                lambda d: d.file_data and d.state != 'rejected'
+            ).mapped('document_type_id')
             rec.missing_documents = len(required.filtered(lambda d: d not in uploaded_types))
 
     # =========================================================

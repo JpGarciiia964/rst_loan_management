@@ -86,6 +86,15 @@ class RstLoanType(models.Model):
         compute='_compute_contract_count', string='Contratos'
     )
 
+    DEFAULT_DOCUMENTS = [
+        {'name': 'Cedula de Identidad', 'sequence': 1, 'is_mandatory': True,
+         'description': 'Copia de la cedula de identidad y electoral del solicitante.'},
+        {'name': 'Carta Laboral', 'sequence': 2, 'is_mandatory': True,
+         'description': 'Carta de trabajo indicando cargo, salario y antiguedad.'},
+        {'name': 'Estados de Cuenta', 'sequence': 3, 'is_mandatory': True,
+         'description': 'Estados de cuenta bancarios de los ultimos 3 meses.'},
+    ]
+
     # ── Constrains ───────────────────────────────────────────────────────
     _sql_constraints = [
         ('code_unique', 'unique(code)', 'El código del tipo de préstamo debe ser único.'),
@@ -106,6 +115,45 @@ class RstLoanType(models.Model):
         Contract = self.env['rst.loan.contract']
         for rec in self:
             rec.contract_count = Contract.search_count([('loan_type_id', '=', rec.id)])
+
+    # ── ORM Overrides ─────────────────────────────────────────────────────
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for rec in records:
+            rec._create_default_documents()
+        return records
+
+    def _create_default_documents(self):
+        """Crea los documentos requeridos por defecto si no existen."""
+        self.ensure_one()
+        existing_names = self.required_document_ids.mapped('name')
+        DocType = self.env['rst.loan.document.type'].sudo()
+        for doc_vals in self.DEFAULT_DOCUMENTS:
+            if doc_vals['name'] not in existing_names:
+                DocType.create({
+                    'loan_type_id': self.id,
+                    'name': doc_vals['name'],
+                    'sequence': doc_vals['sequence'],
+                    'is_mandatory': doc_vals['is_mandatory'],
+                    'description': doc_vals['description'],
+                })
+
+    def action_add_default_documents(self):
+        """Boton para agregar documentos por defecto a tipos existentes."""
+        for rec in self:
+            rec._create_default_documents()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Documentos Agregados'),
+                'message': _('Se agregaron los documentos por defecto que faltaban.'),
+                'type': 'success',
+                'sticky': False,
+            }
+        }
 
     # ── Actions ──────────────────────────────────────────────────────────
     def action_view_contracts(self):

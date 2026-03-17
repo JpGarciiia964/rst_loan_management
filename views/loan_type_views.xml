@@ -83,6 +83,13 @@
                     </group>
 
                     <group string="Documentos Requeridos">
+                        <div class="col-12 mb-2">
+                            <button name="action_add_default_documents" type="object"
+                                    string="Agregar Documentos por Defecto"
+                                    class="btn-secondary btn-sm"
+                                    icon="fa-plus-circle"
+                                    help="Agrega Cedula, Carta Laboral y Estados de Cuenta si no existen."/>
+                        </div>
                         <field name="required_document_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name="sequence" widget="handle"/>

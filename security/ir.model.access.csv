@@ -3,7 +3,7 @@ access_rst_loan_type_viewer,rst.loan.type viewer,model_rst_loan_type,group_rst_l
 access_rst_loan_type_officer,rst.loan.type officer,model_rst_loan_type,group_rst_loan_officer,1,0,0,0
 access_rst_loan_type_manager,rst.loan.type manager,model_rst_loan_type,group_rst_loan_manager,1,1,1,1
 access_rst_loan_document_type_viewer,rst.loan.document.type viewer,model_rst_loan_document_type,group_rst_loan_viewer,1,0,0,0
-access_rst_loan_document_type_officer,rst.loan.document.type officer,model_rst_loan_document_type,group_rst_loan_officer,1,0,0,0
+access_rst_loan_document_type_officer,rst.loan.document.type officer,model_rst_loan_document_type,group_rst_loan_officer,1,1,1,0
 access_rst_loan_document_type_manager,rst.loan.document.type manager,model_rst_loan_document_type,group_rst_loan_manager,1,1,1,1
 access_rst_loan_contract_viewer,rst.loan.contract viewer,model_rst_loan_contract,group_rst_loan_viewer,1,0,0,0
 access_rst_loan_contract_officer,rst.loan.contract officer,model_rst_loan_contract,group_rst_loan_officer,1,1,1,0
